@@ -279,14 +279,16 @@ def _get_auth_stats(
     for fname in tqdm(file_list, desc=gitdir if prefix_gitdir else "Processing",
                       disable=silent_progress, unit="file"):
 
-      if prefix_gitdir:
-        fname = path.join(gitdir, fname)
       try:
         blame_out = check_output(
             base_cmd + [branch, fname], stderr=subprocess.STDOUT)
       except Exception as err:
         getattr(log, "warn" if warn_binary else "debug")(fname + ':' + str(err))
         continue
+
+      if prefix_gitdir:
+          fname = path.join(gitdir, fname)
+
       log.log(logging.NOTSET, blame_out)
 
       # Strip boundary messages,
